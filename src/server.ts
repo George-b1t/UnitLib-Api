@@ -18,6 +18,11 @@ app.use(
   express.static(path.join(__dirname, "..", "storage", "content"))
 );
 
+app.use(
+  "/storage/cape",
+  express.static(path.join(__dirname, "..", "storage", "cape"))
+);
+
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   res.status(400).json({
     message: err.message,
