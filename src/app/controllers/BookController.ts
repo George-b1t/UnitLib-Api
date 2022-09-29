@@ -3,9 +3,9 @@ import { prismaClient } from "../../../prisma/prismaClient";
 
 class BookController {
   async create(req: Request, res: Response): Promise<Response> {
-    const { name, author, genre } = req.body;
+    const { name, author, genre, description } = req.body;
 
-    if (!name || !author || !genre) {
+    if (!name || !author || !genre || !description) {
       throw new Error("Empty field");
     }
 
@@ -14,6 +14,7 @@ class BookController {
         name,
         author,
         genre,
+        description,
       },
     });
 

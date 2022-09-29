@@ -10,6 +10,7 @@ CREATE TABLE "users" (
 CREATE TABLE "book" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "name" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
     "author" TEXT NOT NULL,
     "genre" TEXT NOT NULL,
     "pdf_location" TEXT
