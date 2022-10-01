@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 import multer from "multer";
-import fs from "fs";
+import { prismaClient } from "../../../prisma/prismaClient";
 
 class StorageUploadPdfController {
   storage() {
@@ -26,8 +26,24 @@ class StorageUploadPdfController {
 
   async handle(req: Request, res: Response) {
     const { file } = req;
+    const header: any = req.headers;
+    const bookId: number = header["book-id"];
+    const fileName: number = header["file-name"];
 
-    if (!file) return;
+    console.log(fileName);
+
+    if (!file || !fileName || !bookId) {
+      throw new Error("Invalid file");
+    }
+
+    await prismaClient.book.update({
+      where: {
+        id: Number(bookId),
+      },
+      data: {
+        pdf_location: String(fileName),
+      },
+    });
 
     return res.json({
       message: "Content uploaded successfully",

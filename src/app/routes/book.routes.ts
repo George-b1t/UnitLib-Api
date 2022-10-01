@@ -18,4 +18,10 @@ bookRoutes.post(
   bookController.create
 );
 
+bookRoutes.get(
+  "/pending",
+  authAdmMiddlewareController.execute,
+  bookController.showPendingBooks
+);
+
 export { bookRoutes };

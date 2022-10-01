@@ -22,6 +22,21 @@ class BookController {
       message: "Book created successfully",
     });
   }
+
+  async showPendingBooks(req: Request, res: Response): Promise<Response> {
+    const books = await prismaClient.book.findMany({
+      where: {
+        pdf_location: null,
+      },
+    });
+
+    return res.json({
+      message: "Books finded successfully",
+      data: {
+        books,
+      },
+    });
+  }
 }
 
 export const bookController = new BookController();
