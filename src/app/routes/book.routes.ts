@@ -2,6 +2,7 @@ import { Router } from "express";
 import { bookController } from "../controllers/BookController";
 import { storageUploadPdfController } from "../controllers/StorageUploadPdfController";
 import { authAdmMiddlewareController } from "../middlewares/AuthAmdMiddlwareController";
+import { authMiddlewareController } from "../middlewares/AuthMiddlewareController";
 
 const bookRoutes = Router();
 
@@ -22,6 +23,12 @@ bookRoutes.get(
   "/pending",
   authAdmMiddlewareController.execute,
   bookController.showPendingBooks
+);
+
+bookRoutes.post(
+  "/search",
+  authMiddlewareController.execute,
+  bookController.searchBooks
 );
 
 export { bookRoutes };

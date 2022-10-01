@@ -37,6 +37,44 @@ class BookController {
       },
     });
   }
+
+  async searchBooks(req: Request, res: Response): Promise<Response> {
+    const { value } = req.body;
+
+    const books = await prismaClient.book.findMany({
+      where: {
+        OR: [
+          {
+            name: {
+              contains: value,
+            },
+          },
+          {
+            author: {
+              contains: value,
+            },
+          },
+          {
+            genre: {
+              contains: value,
+            },
+          },
+          {
+            description: {
+              contains: value,
+            },
+          },
+        ],
+      },
+    });
+
+    return res.json({
+      message: "Books found successfully",
+      data: {
+        books,
+      },
+    });
+  }
 }
 
 export const bookController = new BookController();
