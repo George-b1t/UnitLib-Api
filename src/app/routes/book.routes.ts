@@ -19,6 +19,12 @@ bookRoutes.post(
   bookController.create
 );
 
+bookRoutes.post(
+  "/update",
+  authAdmMiddlewareController.execute,
+  bookController.update
+);
+
 bookRoutes.get(
   "/pending",
   authAdmMiddlewareController.execute,

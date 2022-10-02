@@ -1,4 +1,6 @@
 import { Request, Response } from "express";
+import { unlink } from "fs";
+import path from "path";
 
 import multer from "multer";
 import { prismaClient } from "../../../prisma/prismaClient";
@@ -10,7 +12,10 @@ class StorageUploadPdfController {
         cb(null, `./storage/content/`);
       },
       filename: (req, file, cb) => {
-        cb(null, req.headers["file-name"] + ".pdf");
+        cb(
+          null,
+          String(req.headers["file-name"]).split(" ").join("_") + ".pdf"
+        );
       },
     });
 
@@ -30,10 +35,35 @@ class StorageUploadPdfController {
     const bookId: number = header["book-id"];
     const fileName: number = header["file-name"];
 
-    console.log(fileName);
-
     if (!file || !fileName || !bookId) {
       throw new Error("Invalid file");
+    }
+
+    const findedBook = await prismaClient.book.findUnique({
+      where: {
+        id: Number(bookId),
+      },
+    });
+
+    if (!findedBook) {
+      throw new Error("Book not found");
+    }
+
+    const fileNameLocal = String(req.headers["file-name"]).split(" ").join("_");
+
+    if (fileNameLocal !== findedBook.pdf_location) {
+      unlink(
+        path.join(
+          __dirname,
+          "..",
+          "..",
+          "..",
+          "storage",
+          "content",
+          `${findedBook.pdf_location}.pdf`
+        ),
+        () => {}
+      );
     }
 
     await prismaClient.book.update({
@@ -41,7 +71,7 @@ class StorageUploadPdfController {
         id: Number(bookId),
       },
       data: {
-        pdf_location: String(fileName),
+        pdf_location: fileNameLocal,
       },
     });
 
