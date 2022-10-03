@@ -67,26 +67,35 @@ class BookController {
 
     const books = await prismaClient.book.findMany({
       where: {
-        OR: [
+        AND: [
           {
-            name: {
-              contains: value,
+            pdf_location: {
+              not: null,
             },
           },
           {
-            author: {
-              contains: value,
-            },
-          },
-          {
-            genre: {
-              contains: value,
-            },
-          },
-          {
-            description: {
-              contains: value,
-            },
+            OR: [
+              {
+                name: {
+                  contains: value,
+                },
+              },
+              {
+                author: {
+                  contains: value,
+                },
+              },
+              {
+                genre: {
+                  contains: value,
+                },
+              },
+              {
+                description: {
+                  contains: value,
+                },
+              },
+            ],
           },
         ],
       },
