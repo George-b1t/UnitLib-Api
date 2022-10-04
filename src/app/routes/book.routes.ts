@@ -37,4 +37,10 @@ bookRoutes.post(
   bookController.searchBooks
 );
 
+bookRoutes.delete(
+  "/delete/:id",
+  authMiddlewareController.execute,
+  bookController.removeBook
+);
+
 export { bookRoutes };

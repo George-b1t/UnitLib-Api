@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import { prismaClient } from "../../../prisma/prismaClient";
+import { unlink } from "fs";
+import path from "path";
 
 class BookController {
   async create(req: Request, res: Response): Promise<Response> {
@@ -106,6 +108,45 @@ class BookController {
       data: {
         books,
       },
+    });
+  }
+
+  async removeBook(req: Request, res: Response): Promise<Response> {
+    const { id } = req.params;
+
+    const currentBook = await prismaClient.book.findUnique({
+      where: {
+        id: Number(id),
+      },
+    });
+
+    if (!currentBook) {
+      throw new Error("Book not found");
+    }
+
+    if (currentBook.pdf_location) {
+      unlink(
+        path.join(
+          __dirname,
+          "..",
+          "..",
+          "..",
+          "storage",
+          "content",
+          `${currentBook.pdf_location}.pdf`
+        ),
+        () => {}
+      );
+    }
+
+    await prismaClient.book.delete({
+      where: {
+        id: Number(id),
+      },
+    });
+
+    return res.json({
+      message: "Books deleted successfully",
     });
   }
 }
