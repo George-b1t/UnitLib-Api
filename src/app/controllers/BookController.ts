@@ -5,9 +5,9 @@ import path from "path";
 
 class BookController {
   async create(req: Request, res: Response): Promise<Response> {
-    const { name, author, genre, description } = req.body;
+    const { name, author, genre, description, rent_limit } = req.body;
 
-    if (!name || !author || !genre || !description) {
+    if (!name || !author || !genre || !description || !rent_limit) {
       throw new Error("Empty field");
     }
 
@@ -17,6 +17,7 @@ class BookController {
         author,
         genre,
         description,
+        rent_limit,
       },
     });
 
@@ -26,10 +27,20 @@ class BookController {
   }
 
   async update(req: Request, res: Response): Promise<Response> {
-    const { id, name, author, genre, description } = req.body;
+    const { id, name, author, genre, description, rent_limit } = req.body;
 
-    if (!id || !name || !author || !genre || !description) {
+    if (!id || !name || !author || !genre || !description || !rent_limit) {
       throw new Error("Empty field");
+    }
+
+    const rentQuantity = await prismaClient.rent.count({
+      where: {
+        book_id: id,
+      },
+    });
+
+    if (rentQuantity > rent_limit) {
+      throw new Error("Limit exceeded");
     }
 
     await prismaClient.book.update({
@@ -41,11 +52,37 @@ class BookController {
         author,
         genre,
         description,
+        rent_limit,
       },
     });
 
     return res.json({
       message: "Book updated successfully",
+    });
+  }
+
+  async showRentedBooks(req: Request, res: Response): Promise<Response> {
+    const { user_id } = req.params;
+
+    if (!user_id) {
+      throw new Error("Empty field");
+    }
+
+    const books = await prismaClient.book.findMany({
+      where: {
+        Rent: {
+          every: {
+            user_id: Number(user_id),
+          },
+        },
+      },
+    });
+
+    return res.json({
+      message: "Books found successfully",
+      data: {
+        books,
+      },
     });
   }
 
