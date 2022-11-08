@@ -138,6 +138,13 @@ class BookController {
           },
         ],
       },
+      include: {
+        _count: {
+          select: {
+            Rent: true
+          }
+        }
+      }
     });
 
     return res.json({
