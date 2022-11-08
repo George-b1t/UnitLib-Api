@@ -139,9 +139,9 @@ class BookController {
         ],
       },
       include: {
-        _count: {
+        Rent: {
           select: {
-            Rent: true
+            user_id: true
           }
         }
       }
