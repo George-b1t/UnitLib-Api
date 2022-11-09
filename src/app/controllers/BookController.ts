@@ -141,7 +141,8 @@ class BookController {
       include: {
         Rent: {
           select: {
-            user_id: true
+            user_id: true,
+            id: true
           }
         }
       }
@@ -183,6 +184,12 @@ class BookController {
       );
     }
 
+    await prismaClient.rent.deleteMany({
+      where: {
+        book_id: Number(id)
+      }
+    })
+
     await prismaClient.book.delete({
       where: {
         id: Number(id),
@@ -190,7 +197,7 @@ class BookController {
     });
 
     return res.json({
-      message: "Books deleted successfully",
+      message: "Book deleted successfully",
     });
   }
 }

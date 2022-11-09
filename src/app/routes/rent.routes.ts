@@ -10,4 +10,10 @@ rentRoutes.post(
   rentController.create
 );
 
+rentRoutes.delete(
+  "/delete/:id",
+  authMiddlewareController.execute,
+  rentController.delete
+);
+
 export { rentRoutes };

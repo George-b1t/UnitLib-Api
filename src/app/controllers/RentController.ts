@@ -61,6 +61,30 @@ class RentController {
       message: "Rent created successfully",
     });
   }
+
+  async delete(req: Request, res: Response): Promise<Response> {
+    const { id } = req.params;
+
+    const currentRent = await prismaClient.rent.findUnique({
+      where: {
+        id: Number(id),
+      },
+    });
+
+    if (!currentRent) {
+      throw new Error("Rent not found");
+    }
+
+    await prismaClient.rent.delete({
+      where: {
+        id: Number(id)
+      }
+    });
+
+    return res.json({
+      message: "Rent deleted successfully",
+    });
+  }
 }
 
 export const rentController = new RentController();
