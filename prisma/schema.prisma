@@ -25,6 +25,7 @@ model Book {
   author       String
   genre        String
   pdf_location String?
+  cape_location String?
   rent_limit   Int
 
   Rent Rent[]

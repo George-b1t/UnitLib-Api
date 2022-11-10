@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { bookController } from "../controllers/BookController";
+import { storageUploadCapeController } from "../controllers/StorageUploadCapeController";
 import { storageUploadPdfController } from "../controllers/StorageUploadPdfController";
 import { authAdmMiddlewareController } from "../middlewares/AuthAmdMiddlwareController";
 import { authMiddlewareController } from "../middlewares/AuthMiddlewareController";
@@ -7,10 +8,17 @@ import { authMiddlewareController } from "../middlewares/AuthMiddlewareControlle
 const bookRoutes = Router();
 
 bookRoutes.post(
-  "/upload",
+  "/upload/content",
   authAdmMiddlewareController.execute,
   storageUploadPdfController.storage().single("file"),
   storageUploadPdfController.handle
+);
+
+bookRoutes.post(
+  "/upload/cape",
+  authAdmMiddlewareController.execute,
+  storageUploadCapeController.storage().single("file"),
+  storageUploadCapeController.handle
 );
 
 bookRoutes.post(

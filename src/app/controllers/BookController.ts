@@ -29,7 +29,7 @@ class BookController {
   async update(req: Request, res: Response): Promise<Response> {
     const { id, name, author, genre, description, rent_limit } = req.body;
 
-    if (!id || !name || !author || !genre || !description || !rent_limit) {
+    if (!id || !name || !author || !genre || !description) {
       throw new Error("Empty field");
     }
 
@@ -89,7 +89,10 @@ class BookController {
   async showPendingBooks(req: Request, res: Response): Promise<Response> {
     const books = await prismaClient.book.findMany({
       where: {
-        pdf_location: null,
+        OR: [
+          { pdf_location: null },
+          { cape_location: null }
+        ]
       },
     });
 
@@ -111,6 +114,9 @@ class BookController {
             pdf_location: {
               not: null,
             },
+            cape_location: {
+              not: null
+            }
           },
           {
             OR: [
